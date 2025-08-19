@@ -42,6 +42,9 @@
 
   <script type="text/babel">
     const { useEffect, useMemo, useRef, useState } = React;
+    // Serialize only essential numeric/string state to a compact URL hash
+    const encodeState = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+    const decodeState = (s) => { try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch { return null; } };
 
     function TeX({ children, inline = true }) {
       const ref = React.useRef(null);
@@ -108,12 +111,14 @@
         typeCompound: "Compound (sum of axes)",
         typeRotary: "Rotary-table harmonograph",
         descSimple: "Two perpendicular damped oscillations drive the pen along X and Y. Different frequency ratios and phases yield Lissajous-like patterns. Damping causes the trajectory to spiral toward the origin over time.",
-  descCompound: "Each coordinate is a sum of multiple damped sinusoids (axes/components). This increases richness and can model 3+ effective degrees of freedom.",
+        descCompound: "Each coordinate is a sum of multiple damped sinusoids (axes/components). This increases richness and can model 3+ effective degrees of freedom.",
         descRotary: "A single damped oscillation in X and Y is combined with a steady table rotation. The rotation maps the parametric curve through time, producing floral, rosette-like figures.",
         resizeHint: "Drag the bottom-right corner to resize the canvas",
         fullscreen: "Fullscreen",
         fitWindow: "Fit to window",
         zoom: "Zoom (%)",
+        share: "Share link",
+        copied: "Copied to clipboard",
       },
       pt: {
         appTitle: "Simulador de Harmonógrafos",
@@ -155,12 +160,14 @@
         typeCompound: "Composto (soma de eixos)",
         typeRotary: "Mesa rotativa",
         descSimple: "Duas oscilações amortecidas perpendiculares conduzem a caneta nos eixos X e Y. Diferentes rácios de frequência e fases geram padrões tipo Lissajous. O amortecimento faz a trajetória enrolar-se para a origem.",
-  descCompound: "Cada coordenada é a soma de várias senoides amortecidas (eixos/componentes). Isto aumenta a riqueza e pode modelar 3+ graus de liberdade.",
+        descCompound: "Cada coordenada é a soma de várias senoides amortecidas (eixos/componentes). Isto aumenta a riqueza e pode modelar 3+ graus de liberdade.",
         descRotary: "Uma oscilação amortecida em X e Y combina-se com uma rotação constante da mesa, produzindo figuras florais/rosetas.",
         resizeHint: "Arrasta o canto inferior direito para aumentar o canvas",
         fullscreen: "Ecrã inteiro",
         fitWindow: "Ajustar à janela",
         zoom: "Zoom (%)",
+        share: "Partilhar link",
+        copied: "Copiado para a área de transferência",
       },
       fr: {
         appTitle: "Simulateur d'Harmonographes",
@@ -202,12 +209,14 @@
         typeCompound: "Composé (somme d'axes)",
         typeRotary: "Table tournante",
         descSimple: "Deux oscillations amorties perpendiculaires déplacent le stylo selon X et Y. Des rapports de fréquences et des phases différents produisent des figures de type Lissajous. L'amortissement fait converger la trajectoire vers l'origine au fil du temps.",
-  descCompound: "Chaque coordonnée est la somme de plusieurs sinusoïdes amorties (axes/composantes). Cela enrichit le tracé et permet de modéliser plus de trois degrés de liberté effectifs.",
+        descCompound: "Chaque coordonnée est la somme de plusieurs sinusoïdes amorties (axes/composantes). Cela enrichit le tracé et permet de modéliser plus de trois degrés de liberté effectifs.",
         descRotary: "Une oscillation amortie unique en X et Y, combinée à une rotation constante de la table. Cette rotation fait évoluer la courbe paramétrique au fil du temps et génère des motifs floraux en rosette.",
         resizeHint: "Faites glisser le coin inférieur droit pour redimensionner le canvas",
         fullscreen: "Plein écran",
         fitWindow: "Ajuster à la fenêtre",
         zoom: "Zoom (%)",
+        share: "Partager le lien",
+        copied: "Copié dans le presse-papiers",
       },
       es: {
         appTitle: "Simulador de Harmonógrafos",
@@ -249,12 +258,14 @@
         typeCompound: "Compuesto (suma de ejes)",
         typeRotary: "Mesa giratoria",
         descSimple: "Dos oscilaciones amortiguadas perpendiculares mueven el lápiz en X e Y. Diferentes relaciones de frecuencia y fases generan figuras tipo Lissajous. El amortiguamiento hace que la trayectoria se enrolle hacia el origen con el tiempo.",
-  descCompound: "Cada coordenada es la suma de varias sinusoides amortiguadas (ejes/componentes). Esto aumenta la riqueza del trazado y puede modelar más de tres grados de libertad efectivos.",
+        descCompound: "Cada coordenada es la suma de varias sinusoides amortiguadas (ejes/componentes). Esto aumenta la riqueza del trazado y puede modelar más de tres grados de libertad efectivos.",
         descRotary: "Una única oscilación amortiguada en X e Y combinada con una rotación constante de la mesa. La rotación hace evolucionar la curva paramétrica en el tiempo, produciendo motivos florales en forma de roseta.",
         resizeHint: "Arrastra la esquina inferior derecha para redimensionar el canvas",
         fullscreen: "Pantalla completa",
         fitWindow: "Ajustar a la ventana",
         zoom: "Zoom (%)",
+        share: "Compartir enlace",
+        copied: "Copiado al portapapeles",
       },
       it: {
         appTitle: "Simulatore di Armonografi",
@@ -296,12 +307,14 @@
         typeCompound: "Composto (somma di assi)",
         typeRotary: "Tavola rotante",
         descSimple: "Due oscillazioni smorzate e perpendicolari guidano la penna lungo X e Y. Rapporti di frequenza e fasi diversi producono figure tipo Lissajous. Lo smorzamento fa spiraleggiare la traiettoria verso l'origine col tempo.",
-  descCompound: "Ogni coordinata è la somma di più sinusoidi smorzate (assi/componenti). Questo arricchisce il disegno e consente di modellare più di tre gradi di libertà effettivi.",
+        descCompound: "Ogni coordinata è la somma di più sinusoidi smorzate (assi/componenti). Questo arricchisce il disegno e consente di modellare più di tre gradi di libertà effettivi.",
         descRotary: "Un'unica oscillazione smorzata in X e Y combinata con una rotazione costante del piatto. La rotazione fa evolvere la curva parametrica nel tempo generando motivi floreali a rosetta.",
         resizeHint: "Trascina l'angolo in basso a destra per ridimensionare il canvas",
         fullscreen: "Schermo intero",
         fitWindow: "Adatta alla finestra",
         zoom: "Zoom (%)",
+        share: "Condividi link",
+        copied: "Copiato negli appunti",
       },
       de: {
         appTitle: "Harmonograph-Simulator",
@@ -343,12 +356,14 @@
         typeCompound: "Zusammengesetzt (Summen der Achsen)",
         typeRotary: "Drehtisch",
         descSimple: "Zwei gedämpfte, senkrechte Schwingungen steuern den Stift entlang X und Y. Unterschiedliche Frequenzverhältnisse und Phasen erzeugen Lissajous-artige Muster. Die Dämpfung lässt die Trajektorie mit der Zeit spiralförmig zum Ursprung hin zusammenlaufen.",
-  descCompound: "Jede Koordinate ist eine Summe mehrerer gedämpfter Sinusschwingungen (Achsen/Komponenten). Das erhöht die Vielfalt und kann mehr als drei effektive Freiheitsgrade modellieren.",
+        descCompound: "Jede Koordinate ist eine Summe mehrerer gedämpfter Sinusschwingungen (Achsen/Komponenten). Das erhöht die Vielfalt und kann mehr als drei effektive Freiheitsgrade modellieren.",
         descRotary: "Eine einzelne gedämpfte Schwingung in X und Y wird mit einer gleichmäßigen Tischrotation kombiniert. Die Rotation führt die parametrische Kurve durch die Zeit und erzeugt blüten- bzw. rosettenartige Figuren.",
         resizeHint: "Ziehen Sie die rechte untere Ecke, um das Canvas zu vergrößern",
         fullscreen: "Vollbild",
         fitWindow: "An Fenster anpassen",
         zoom: "Zoom (%)",
+        share: "Link teilen",
+        copied: "In die Zwischenablage kopiert",
       },
     };
 
@@ -395,6 +410,7 @@
 
       const containerRef = React.useRef(null);
       const [zoom, setZoom] = React.useState(100);
+      const [copied, setCopied] = React.useState(false);
 
       React.useEffect(() => {
         const el = containerRef.current; if (!el) return;
@@ -423,6 +439,55 @@
           if (ny !== 1) setNy(1);
         }
       }, [type, nx, ny]);
+
+      // Load state from URL hash on mount
+      React.useEffect(() => {
+        const raw = location.hash.startsWith('#s=') ? location.hash.slice(3) : null;
+        const data = raw ? decodeState(raw) : null;
+        if (!data) return;
+        try {
+          setType(data.t ?? TYPES.SIMPLE);
+          setNx(clampInt(data.nx ?? 1, 1, 4));
+          setNy(clampInt(data.ny ?? 1, 1, 4));
+          if (Array.isArray(data.x)) setXComps(data.x.map((c) => ({ A: +c.A, f: +c.f, phi: +c.phi, d: +c.d })));
+          if (Array.isArray(data.y)) setYComps(data.y.map((c) => ({ A: +c.A, f: +c.f, phi: +c.phi, d: +c.d })));
+          if (typeof data.omega === 'number') setOmega(data.omega);
+          if (typeof data.theta0 === 'number') setTheta0(data.theta0);
+          if (typeof data.bg === 'string') setBg(data.bg);
+          if (typeof data.stroke === 'string') setStroke(data.stroke);
+          if (typeof data.lw === 'number') setLineWidth(data.lw);
+          if (typeof data.cm === 'string') setColorMode(data.cm);
+          if (typeof data.h0 === 'number') setHue0(data.h0);
+          if (typeof data.hs === 'number') setHueSpeed(data.hs);
+          if (typeof data.dur === 'number') setDuration(clampInt(data.dur, 5, 120));
+          if (typeof data.fps === 'number') setFps(clampInt(data.fps, 15, 120));
+          if (typeof data.spf === 'number') setStepsPerFrame(clampInt(data.spf, 1, 20));
+          if (typeof data.eW === 'number') setExportW(clampInt(data.eW, 200, 4000));
+          if (typeof data.eH === 'number') setExportH(clampInt(data.eH, 200, 4000));
+        } catch { }
+      }, []);
+
+      // Push state to URL hash (debounced a bit via RAF), minimal shape
+      const pushURL = React.useCallback(() => {
+        const data = {
+          t: type,
+          nx, ny,
+          x: xComps.map(c => ({ A: c.A, f: c.f, phi: c.phi, d: c.d })),
+          y: yComps.map(c => ({ A: c.A, f: c.f, phi: c.phi, d: c.d })),
+          omega, theta0,
+          bg, stroke, lw: lineWidth, cm: colorMode,
+          h0: hue0, hs: hueSpeed,
+          dur: duration, fps, spf: stepsPerFrame,
+          eW: exportW, eH: exportH,
+        };
+        const hash = '#s=' + encodeState(data);
+        history.replaceState(null, '', hash);
+      }, [type, nx, ny, xComps, yComps, omega, theta0, bg, stroke, lineWidth, colorMode, hue0, hueSpeed, duration, fps, stepsPerFrame, exportW, exportH]);
+
+      React.useEffect(() => {
+        const id = requestAnimationFrame(pushURL);
+        return () => cancelAnimationFrame(id);
+      }, [pushURL]);
 
       const equationsHTML = React.useMemo(() => getEquationsHTML(type, xComps, yComps, omega, theta0), [type, xComps, yComps, omega, theta0]);
       const description = React.useMemo(() => getDescription(type, lang), [type, lang]);
@@ -622,8 +687,8 @@
           ctx.stroke();
           prev = [x, y];
         }
-  const a = document.createElement('a');
-  a.download = `harmonograph-${cssW}x${cssH}-${Date.now()}.png`;
+        const a = document.createElement('a');
+        a.download = `harmonograph-${cssW}x${cssH}-${Date.now()}.png`;
         a.href = off.toDataURL('image/png');
         a.click();
       }
@@ -889,6 +954,18 @@
                   <label className="text-xs opacity-70">{t('zoom')}</label>
                   <input type="range" min={50} max={300} value={zoom} onChange={(e) => setZoom(parseInt(e.target.value))} />
                   <span className="text-xs tabular-nums w-12">{zoom}%</span>
+                  <button
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(location.href);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 1500);
+                      } catch { }
+                    }}
+                    className="ml-auto px-2 py-1 text-xs rounded-md bg-neutral-200 hover:bg-neutral-300"
+                    title={location.href}
+                  >{t('share')}</button>
+                  {copied && <span className="text-xs text-emerald-700">{t('copied')}</span>}
                 </div>
               </div>
 
